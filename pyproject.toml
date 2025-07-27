@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "fastapistorediploma"
+version = "0.1.0"
+description = ""
+authors = ["Nurlan-Grachyov <nurlan.grachyov@mail.ru>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.13"
+fastapi = { extras = ["all"], version = "^0.115.12" }
+uvicorn = "^0.34.3"
+asyncpg = {extras = ["sqlalchemy"], version = "^0.30.0"}
+flake8 = "^7.2.0"
+pycodestyle = "^2.13.0"
+pyflakes = "^3.3.2"
+python-dotenv = "^1.1.0"
+python-jose = "^3.5.0"
+black = "^25.1.0"
+isort = "^6.0.1"
+fastapi-users = {extras = ["sqlalchemy"], version = "^14.0.1"}
+psycopg2-binary = "^2.9.10"
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+fastapi-users-db-tortoise = "^2.0.0"
+fastapi-mail = "^1.5.0"
+fastapi-users-db-sqlalchemy = "^7.0.0"
+alembic = "^1.16.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
