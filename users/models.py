@@ -1,27 +1,46 @@
-from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTable
-from pydantic import EmailStr
-from sqlalchemy import Enum, Integer, String
-from sqlalchemy.orm import Mapped, mapped_column
+from django.contrib.auth.models import AbstractUser
+from django.db import models
 
-from config.base import Base
+# Create your models here.
 
 
-class User(SQLAlchemyBaseUserTable[int], Base):
-    __tablename__ = "users"
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    username: Mapped[str] = mapped_column(String(150), comment="Напишите свое ФИО")
-    phone: Mapped[str] = mapped_column(
-        String(12),
-        unique=True,
-        comment="Введите email или номер телефона. Телефон должен быть в формате +7XXXXXXXXXX",
+class User(AbstractUser):
+    username = models.CharField(
+        max_length=100,
+        verbose_name="Username",
+        blank=True,
+        null=True,
+        help_text="Введите свое имя",
     )
-    email: Mapped[EmailStr] = mapped_column(
-        String(100), unique=True, comment="Введите email в формате username@example.com"
+    email = models.EmailField(unique=True, verbose_name="Электронная почта")
+    avatar = models.ImageField(
+        upload_to="users/avatars",
+        blank=True,
+        null=True,
+        verbose_name="Аватар",
+        help_text="Загрузити фотографию",
     )
-    role: Mapped[str] = mapped_column(
-        Enum("superuser", "admin", "user", name="roles"), default="user"
+    phone_number = models.CharField(
+        max_length=15,
+        verbose_name="Номер телефона",
+        help_text="Введите номер телефона",
+        blank=True,
+        null=True,
     )
+    # telegram = models.CharField(
+    #     max_length=15,
+    #     verbose_name="Телеграм",
+    #     help_text="Введите телеграма",
+    #     blank=True,
+    #     null=True,
+    # )
+
+    def __str__(self):
+        return f"{self.email}"
 
     class Meta:
-        table = "users"
+        verbose_name = "пользователь"
+        verbose_name_plural = "Пользователи"
+
+    USERNAME_FIELD = "email"
+    REQUIRED_FIELDS = []
