@@ -7,4 +7,5 @@
 #     """
 #
 #     def has_permission(self, request, view):
-#         return request.user.groups.filter(name="moderators").exists() or request.user.is_staff
+# return request.user.groups.filter(name="moderators").exists() or
+# request.user.is_staff

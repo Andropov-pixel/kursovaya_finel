@@ -12,7 +12,8 @@ User = get_user_model()
 
 class HabitsModelTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username="test_user", password="12345")
+        self.user = User.objects.create_user(
+            username="test_user", password="12345")
 
     def test_creating_habit(self):
         habit = Habits.objects.create(
@@ -48,7 +49,8 @@ class HabitsModelTest(TestCase):
 
 class HabitsSerializerTest(TestCase):
     def setUp(self):
-        self.user = User.objects.create_user(username="test_user", password="12345")
+        self.user = User.objects.create_user(
+            username="test_user", password="12345")
         self.valid_habit_data = {
             "place": "Дом",
             "time": "8:00:00",
@@ -77,7 +79,8 @@ class HabitsSerializerTest(TestCase):
 class HabitAPITestCase(TestCase):
     def setUp(self):
         self.client = APIClient()
-        self.user = User.objects.create_user(username="test_user", password="12345")
+        self.user = User.objects.create_user(
+            username="test_user", password="12345")
         self.client.force_authenticate(user=self.user)
 
         self.habits = Habits.objects.create(
@@ -106,7 +109,6 @@ class HabitAPITestCase(TestCase):
                 "publicity_flag": False,
                 "owner": 100,
             },
-
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["action"], "Действие")
@@ -115,7 +117,6 @@ class HabitAPITestCase(TestCase):
         response = self.client.patch(
             f"/habits/habits_update/{self.habits.id}/",
             {"action": "Другое действие", "frequency": 5},
-
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.habits.refresh_from_db()
@@ -123,7 +124,8 @@ class HabitAPITestCase(TestCase):
         self.assertEqual(self.habits.frequency, 5)
 
     def test_delete_habit(self):
-        response = self.client.delete(f"/habits/habits_delete/{self.habits.id}/")
+        response = self.client.delete(
+            f"/habits/habits_delete/{self.habits.id}/")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(Habits.objects.filter(id=self.habits.id).exists())
 
@@ -146,4 +148,6 @@ class HabitAPITestCase(TestCase):
         )
         response = self.client.get("/habits/habits_public_list/")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn(public_habit.action, [habits["action"] for habits in response.data])
+        self.assertIn(
+            public_habit.action, [
+                habits["action"] for habits in response.data])

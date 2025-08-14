@@ -17,7 +17,8 @@ class HabitListView(ListAPIView):
     pagination_class = HabitListPagination
 
     def get_queryset(self):
-        return Habits.objects.filter(owner=self.request.user).order_by("action")
+        return Habits.objects.filter(
+            owner=self.request.user).order_by("action")
 
 
 class PublicHabitListView(ListAPIView):
@@ -58,7 +59,8 @@ class HabitUpdateView(UpdateAPIView):
         # Получаем привычку, которую нужно редактировать
         obj = super().get_object()
         if obj.owner != self.request.user:
-            raise PermissionDenied("У вас нет прав для изменения этой привычки.")
+            raise PermissionDenied(
+                "У вас нет прав для изменения этой привычки.")
         return obj
 
 
@@ -77,5 +79,6 @@ class HabitDeleteView(DestroyAPIView):
         # Получаем привычку, которую нужно удалять
         obj = super().get_object()
         if obj.owner != self.request.user:
-            raise PermissionDenied("У вас нет прав для удаления этой привычки.")
+            raise PermissionDenied(
+                "У вас нет прав для удаления этой привычки.")
         return obj

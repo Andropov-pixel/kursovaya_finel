@@ -21,6 +21,7 @@ def telegram_reminder():
         )
         params = {"text": message, "chat_id": habits.TELEGRAM_API_KEY}
         requests.get(
-            f"http://api.telegram.org/bot{settings.TELEGRAM_API_KEY}/sendMessage",
+            f"http://api.telegram.org/bot{
+                settings.TELEGRAM_API_KEY}/sendMessage",
             params=params,
         )

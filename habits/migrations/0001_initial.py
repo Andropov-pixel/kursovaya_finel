@@ -13,10 +13,14 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name="Habits",
             fields=[
-                ("id", models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name="ID")),
+                ("id", models.BigAutoField(auto_created=True,
+                 primary_key=True, serialize=False, verbose_name="ID")),
                 (
                     "place",
-                    models.CharField(help_text="Введите Место", max_length=250, verbose_name="Место выполнения"),
+                    models.CharField(
+                        help_text="Введите Место",
+                        max_length=250,
+                        verbose_name="Место выполнения"),
                 ),
                 ("time", models.TimeField(verbose_name="Время выполнения")),
                 ("action", models.CharField(max_length=255, verbose_name="Действие")),
@@ -26,7 +30,8 @@ class Migration(migrations.Migration):
                         help_text="Введите Признак", max_length=250, verbose_name="Признак приятной привычки"
                     ),
                 ),
-                ("frequency", models.PositiveIntegerField(default=1, verbose_name="Периодичность")),
+                ("frequency", models.PositiveIntegerField(
+                    default=1, verbose_name="Периодичность")),
                 (
                     "reward",
                     models.CharField(
@@ -37,8 +42,10 @@ class Migration(migrations.Migration):
                         verbose_name="Вознаграждение ",
                     ),
                 ),
-                ("time_to_perform", models.PositiveIntegerField(verbose_name="Время на выполнение")),
-                ("publicity_flag", models.BooleanField(default=False, verbose_name="Признак публичности")),
+                ("time_to_perform", models.PositiveIntegerField(
+                    verbose_name="Время на выполнение")),
+                ("publicity_flag", models.BooleanField(
+                    default=False, verbose_name="Признак публичности")),
             ],
             options={
                 "verbose_name": "Привычка",

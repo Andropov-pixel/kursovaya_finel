@@ -15,7 +15,10 @@ class Habits(models.Model):
         related_name="habits",
         verbose_name="Создатель привычки",
     )
-    place = models.CharField(max_length=250, verbose_name="Место выполнения", help_text="Введите Место")
+    place = models.CharField(
+        max_length=250,
+        verbose_name="Место выполнения",
+        help_text="Введите Место")
     time = models.TimeField(verbose_name="Время выполнения")
     action = models.CharField(max_length=255, verbose_name="Действие")
     pleasant_habit_flag = models.BooleanField(
@@ -29,23 +32,29 @@ class Habits(models.Model):
         limit_choices_to={"pleasant_habit_flag": True},
         verbose_name="Связанная привычка",
     )  # ForeignKey self
-    frequency = models.PositiveIntegerField(default=1, verbose_name="Периодичность")
+    frequency = models.PositiveIntegerField(
+        default=1, verbose_name="Периодичность")
     reward = models.CharField(
         max_length=250, null=True, blank=True, verbose_name="Вознаграждение ", help_text="Введите Вознаграждение "
     )
-    time_to_perform = models.PositiveIntegerField(verbose_name="Время на выполнение")  # Int+
-    publicity_flag = models.BooleanField(default=False, verbose_name="Признак публичности")
+    time_to_perform = models.PositiveIntegerField(
+        verbose_name="Время на выполнение")  # Int+
+    publicity_flag = models.BooleanField(
+        default=False, verbose_name="Признак публичности")
 
     def __str__(self):
         return self.action
 
     def clean(self):
         if self.reward and self.related_habit:
-            raise ValidationError("Нельзя совмещать вознаграждение и связанную привычку.")
+            raise ValidationError(
+                "Нельзя совмещать вознаграждение и связанную привычку.")
         if self.time_to_perform > 120:
-            raise ValidationError("Время выполнения не должно быть больше 120 минут.")
+            raise ValidationError(
+                "Время выполнения не должно быть больше 120 минут.")
         if self.frequency < 1 or self.frequency > 7:
-            raise ValidationError("Периодичность выполнения должна быть от 1 до 7 дней")
+            raise ValidationError(
+                "Периодичность выполнения должна быть от 1 до 7 дней")
 
     class Meta:
         verbose_name = "Привычка"

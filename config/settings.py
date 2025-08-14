@@ -32,7 +32,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True if os.getenv("DEBUG") == "True" else False
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ["*"]
 
 # Application definition
 
@@ -187,7 +187,8 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://localhost:8000",  # Замените на адрес вашего фронтенд-сервера и добавьте адрес бэкенд-сервера
+    # Замените на адрес вашего фронтенд-сервера и добавьте адрес бэкенд-сервера
+    "http://localhost:8000",
 ]
 
 CORS_ALLOW_ALL_ORIGINS = False
@@ -197,7 +198,8 @@ STRIPE_API_KEY = os.getenv("STRIPE_API_KEY")
 # Настройки для Celery
 
 # URL-адрес брокера сообщений
-CELERY_BROKER_URL = "redis://localhost:6379"  # Например, Redis, который по умолчанию работает на порту 6379
+# Например, Redis, который по умолчанию работает на порту 6379
+CELERY_BROKER_URL = "redis://localhost:6379"
 
 # URL-адрес брокера результатов, также Redis
 CELERY_RESULT_BACKEND = "redis://localhost:6379"
@@ -214,16 +216,16 @@ CELERY_TASK_TIME_LIMIT = 30 * 60
 CELERY_BEAT_SCHEDULE = {
     "task-name": {
         "task": "college.deactivate_inactive_users",
-        "schedule": timedelta(days=1),  # Расписание выполнения задачи (например, каждые день)
+        # Расписание выполнения задачи (например, каждые день)
+        "schedule": timedelta(days=1),
     },
 }
 
 TELEGRAM_API_KEY = os.getenv("TELEGRAM_API_KEY")
 
-if 'test' in sys.argv:
+if "test" in sys.argv:
     DATABASES = {
-        'default': {
-            'ENGINE': "django.db.backends.sqlite3",
-            'NAME': BASE_DIR / 'test_db.sqlite3'
-        }
-    }
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": BASE_DIR /
+            "test_db.sqlite3"}}
