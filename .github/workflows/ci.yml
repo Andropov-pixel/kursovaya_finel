@@ -2,13 +2,9 @@ name: Django CI/CD Pipeline
 
 on:
   push:
-    branches:
-      - main
-      - master
+    branches: [main, master]
   pull_request:
-    branches:
-      - main
-      - master
+    branches: [main, master]
 
 env:
   DOCKER_REGISTRY: docker.io
@@ -75,14 +71,12 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-        env:
-          IMAGE_TAG: ${{ github.sha }}
-        script: |
-          docker pull ${{ env.DOCKER_REGISTRY }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
-          docker stop ${{ env.IMAGE_NAME }} || true
-          docker rm ${{ env.IMAGE_NAME }} || true
-          docker run -d \
-            --name ${{ env.IMAGE_NAME }} \
-            -p 80:8000 \
-            -e SECRET_KEY='${{ secrets.SECRET_KEY }}' \
-            ${{ env.DOCKER_REGISTRY }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ env.IMAGE_TAG }}
+          script: |
+            docker pull ${{ env.DOCKER_REGISTRY }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
+            docker stop ${{ env.IMAGE_NAME }} || true
+            docker rm ${{ env.IMAGE_NAME }} || true
+            docker run -d \
+              --name ${{ env.IMAGE_NAME }} \
+              -p 80:8000 \
+              -e SECRET_KEY='${{ secrets.SECRET_KEY }}' \
+              ${{ env.DOCKER_REGISTRY }}/${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:${{ github.sha }}
