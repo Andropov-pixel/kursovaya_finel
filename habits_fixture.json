@@ -1,0 +1,34 @@
+[
+{
+    "model": "habits.habits",
+    "pk": 1,
+    "fields": {
+        "owner": 3,
+        "place": "место",
+        "time": "14:00:00",
+        "action": "Действие",
+        "pleasant_habit_flag": true,
+        "related_habit": null,
+        "frequency": 2,
+        "reward": "Вознаграждение",
+        "time_to_perform": 100,
+        "publicity_flag": true
+    }
+},
+{
+    "model": "habits.habits",
+    "pk": 2,
+    "fields": {
+        "owner": 3,
+        "place": "дом",
+        "time": "20:00:00",
+        "action": "Действие",
+        "pleasant_habit_flag": true,
+        "related_habit": 1,
+        "frequency": 2,
+        "reward": "Вознаграждение",
+        "time_to_perform": 120,
+        "publicity_flag": true
+    }
+}
+]
