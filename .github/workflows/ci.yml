@@ -39,7 +39,7 @@ jobs:
           python manage.py test
 
   build:
-    needs: test
+    needs: lint-and-test
     runs-on: ubuntu-latest
 
     steps:
