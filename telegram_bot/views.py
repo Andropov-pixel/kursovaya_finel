@@ -24,7 +24,7 @@ def telegram_webhook(request):
             except User.DoesNotExist:
                 reply = "Пользователь с таким email не найден."
 
-            from habits.utils import send_telegram_message
+            from habit.utils import send_telegram_message
 
             send_telegram_message(chat_id, reply)
         return JsonResponse({"ok": True})
