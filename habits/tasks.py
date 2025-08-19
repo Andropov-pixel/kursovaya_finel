@@ -1,27 +1,18 @@
-import requests
 from celery import shared_task
-
-from config import settings
-from habits.models import Habits
-
-# Create your tests here.
+from django.utils import timezone
+from .models import Habit
 
 
 @shared_task
-def telegram_reminder():
-    """
-    Задача отправки уведомления в телеграм
-    """
+def send_habit_reminders():
+    from habit.utils import send_telegram_message
 
-    for habits in Habits.object.all():
-        message = (
-            f"Не забудьте выполнить привычку: {habits.action}\n"
-            f"Время выполнения: {habits.time}\n"
-            f"Место выполнения: {habits.place}."
-        )
-        params = {"text": message, "chat_id": habits.TELEGRAM_API_KEY}
-        requests.get(
-            f"http://api.telegram.org/bot{
-                settings.TELEGRAM_API_KEY}/sendMessage",
-            params=params,
-        )
+    now = timezone.now().time()
+
+    habits = Habit.objects.filter(is_public=True, periodicity=1).select_related("user")
+
+    for habit in habits:
+        chat_id = getattr(habit.user, "telegram_chat_id", None)
+        if chat_id and habit.time <= now:
+            message = f"Напоминание: {habit.action} в {habit.place} в {habit.time.strftime('%H:%M')}"
+            send_telegram_message(chat_id, message)

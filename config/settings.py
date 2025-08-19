@@ -177,6 +177,9 @@ CACHES = {
         "LOCATION": "redis://localhost:6379/1",
     }
 }
+
+
+
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
@@ -229,3 +232,5 @@ if "test" in sys.argv:
             "ENGINE": "django.db.backends.sqlite3",
             "NAME": BASE_DIR /
             "test_db.sqlite3"}}
+
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")

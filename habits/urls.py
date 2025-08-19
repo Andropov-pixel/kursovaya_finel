@@ -1,25 +1,12 @@
-from django.urls import path
+import requests
+from config.settings import TELEGRAM_BOT_TOKEN
 
-from habits.apps import AtomicHabitsConfig
-from habits.views import HabitCreateView, HabitDeleteView, HabitListView, HabitUpdateView, PublicHabitListView
+TELEGRAM_API_URL = f"https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage"
 
-# Описание маршрутизации для User
 
-app_name = AtomicHabitsConfig.name
-
-urlpatterns = [
-    path("habits_list/", HabitListView.as_view(), name="habits_list"),
-    path(
-        "habits_public_list/",
-        PublicHabitListView.as_view(),
-        name="habits_public_list"),
-    path("habits_create/", HabitCreateView.as_view(), name="habits_create"),
-    path(
-        "habits_update/<int:pk>/",
-        HabitUpdateView.as_view(),
-        name="habits_update"),
-    path(
-        "habits_delete/<int:pk>/",
-        HabitDeleteView.as_view(),
-        name="habits_delete"),
-]
+def send_telegram_message(chat_id, text):
+    data = {"chat_id": chat_id, "text": text}
+    try:
+        requests.post(TELEGRAM_API_URL, data=data, timeout=5)
+    except requests.exceptions.RequestException as e:
+        print(f"Ошибка при отправке сообщения в Telegram: {e}")
