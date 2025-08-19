@@ -1,7 +1,38 @@
+# Игнорировать виртуальные окружения
+venv/
+env/
+**/__pycache__/
+**/*.pyc
+**/*.pyo
+**/*.pyd
+
+# Игнорировать логи и временные файлы
+*.log
+*.sqlite3
+*.db
+*.pot
+*.mo
+*.swp
+*.swo
+*.DS_Store
+
+# Git
 .git
 .gitignore
+
+# Docker
+docker-compose.override.yml
+
+# IDE и редакторы
+.vscode/
+.idea/
+
+# Кэш pip
+pip-wheel-metadata/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Файлы среды и секреты
 .env
-venv
-__pycache__
-*.pyc
-test_db.sqlite3

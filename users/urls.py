@@ -1,29 +1,18 @@
 from django.urls import path
-from rest_framework.permissions import AllowAny
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from users.apps import UsersConfig
-from users.views import PublicHabitListView, UserRegisterView
-
-# Описание маршрутизации для User
-
-app_name = UsersConfig.name
+from .serializers import MyTokenObtainPairSerializer
+from .views import RegisterView
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 
 urlpatterns = [
+    path("register/", RegisterView.as_view(), name="register"),
     path(
-        "register/",
-        UserRegisterView.as_view(),
-        name="user-register"),
-    # Регистрация пользователя
-    path(
-        "login/",
-        TokenObtainPairView.as_view(permission_classes=(AllowAny,)),
-        name="login",
-    ),  # Авторизация пользователя
-    path(
-        "token/refresh/",
-        TokenRefreshView.as_view(permission_classes=(AllowAny,)),
-        name="token_refresh",
+        "token/",
+        TokenObtainPairView.as_view(serializer_class=MyTokenObtainPairSerializer),
+        name="token_obtain_pair",
     ),
-    path("public_list/", PublicHabitListView.as_view(), name="habits_list"),
+    path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
 ]

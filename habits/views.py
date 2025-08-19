@@ -1,84 +1,26 @@
-from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import CreateAPIView, DestroyAPIView, ListAPIView, UpdateAPIView
-
-from habits.models import Habits
-from habits.paginators import HabitListPagination
-from habits.serliazers import HabitsSerializer
-
-# Create your views here.
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.decorators import action
+from rest_framework.response import Response
+from .models import Habit
+from .serializers import HabitSerializer, HabitPublicSerializer
 
 
-class HabitListView(ListAPIView):
-    """
-    Просмотор  привычки
-    """
-
-    serializer_class = HabitsSerializer
-    pagination_class = HabitListPagination
+class HabitViewSet(ModelViewSet):
+    serializer_class = HabitSerializer
+    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return Habits.objects.filter(
-            owner=self.request.user).order_by("action")
+        """Показываем только привычки текущего пользователя"""
+        return Habit.objects.filter(user=self.request.user).order_by("-created_at")
 
+    def perform_create(self, serializer):
+        """При создании привычки автоматически привязываем к текущему пользователю"""
+        serializer.save(user=self.request.user)
 
-class PublicHabitListView(ListAPIView):
-    """
-    Просмотор всех привычки
-    """
-
-    serializer_class = HabitsSerializer
-
-    def get_queryset(self):
-        return Habits.objects.filter(publicity_flag=True).order_by("action")
-
-
-class HabitCreateView(CreateAPIView):
-    """
-    создание  привычки
-    """
-
-    serializer_class = HabitsSerializer
-
-
-class HabitUpdateView(UpdateAPIView):
-    """
-    Обновление привычки
-    """
-
-    serializer_class = HabitsSerializer
-
-    def get_queryset(self):
-        # Получаем привычки, принадлежащие текущему пользователю
-        return Habits.objects.filter(owner=self.request.user)
-
-    def perform_update(self, serializer):
-        # Сохраняем обновленную привычку
-        serializer.save()
-
-    def get_object(self):
-        # Получаем привычку, которую нужно редактировать
-        obj = super().get_object()
-        if obj.owner != self.request.user:
-            raise PermissionDenied(
-                "У вас нет прав для изменения этой привычки.")
-        return obj
-
-
-class HabitDeleteView(DestroyAPIView):
-    """
-    Удаление  привычки
-    """
-
-    serializer_class = HabitsSerializer
-
-    def get_queryset(self):
-        # Получаем привычки, принадлежащие текущему пользователю
-        return Habits.objects.filter(owner=self.request.user)
-
-    def get_object(self):
-        # Получаем привычку, которую нужно удалять
-        obj = super().get_object()
-        if obj.owner != self.request.user:
-            raise PermissionDenied(
-                "У вас нет прав для удаления этой привычки.")
-        return obj
+    @action(detail=False, methods=["get"], url_path="public", permission_classes=[])
+    def public_habits(self, request):
+        """Список публичных привычек всех пользователей, доступен без авторизации"""
+        public_habits = Habit.objects.filter(is_public=True).order_by("-created_at")
+        serializer = HabitPublicSerializer(public_habits, many=True)
+        return Response(serializer.data)

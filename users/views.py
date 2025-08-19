@@ -1,30 +1,26 @@
-from django.contrib.auth import get_user_model
-from rest_framework import permissions, status
-from rest_framework.generics import CreateAPIView, ListAPIView
+from rest_framework.permissions import AllowAny
+from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework import status
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
-from .serializers import UserSerializer
-
-User = get_user_model()
-
-
-class UserRegisterView(CreateAPIView):
-    serializer_class = UserSerializer
-
-    def create(self, request, *args, **kwargs):
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+from .serializers import RegisterSerializer
 
 
-class PublicHabitListView(ListAPIView):
-    """
-    Просмотор всех привычки
-    """
+class RegisterView(APIView):
+    permission_classes = [AllowAny]
 
-    serializer_class = UserSerializer
-    permission_classes = [permissions.AllowAny]
-
-    def get_queryset(self):
-        return User.objects
+    def post(self, request):
+        serializer = RegisterSerializer(data=request.data)
+        if serializer.is_valid():
+            user = serializer.save()
+            refresh = TokenObtainPairSerializer.get_token(user)
+            return Response(
+                {
+                    "message": "Пользователь зарегистрирован",
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token),
+                },
+                status=status.HTTP_201_CREATED,
+            )
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
