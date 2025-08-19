@@ -160,6 +160,13 @@ idea/
 .dmypy.json
 dmypy.json
 
+# Ключи
+*.pem
+*.key
+*.cert
+*.crt
+private_key.pem
+
 # Pyre type checker
 .pyre/
 

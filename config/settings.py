@@ -10,6 +10,14 @@ from pathlib import Path
 load_dotenv()
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Пути к ключам
+PRIVATE_KEY_PATH = BASE_DIR / 'private_key.pem'
+PUBLIC_KEY_PATH = BASE_DIR / 'public_key.pem'
+
+SIMPLE_JWT = {
+    'SIGNING_KEY': os.getenv('JWT_PRIVATE_KEY', '').replace('\\n', '\n') if os.getenv('JWT_PRIVATE_KEY') else None,
+    'VERIFYING_KEY': os.getenv('JWT_PUBLIC_KEY', '').replace('\\n', '\n') if os.getenv('JWT_PUBLIC_KEY') else None,
+}
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ.get('SECRET_KEY', '3e4iyg%f)w+9umzn=vu&=%5(*+#y6&&op2x1-4nq(41@iux8ey')
@@ -67,37 +75,22 @@ TEMPLATES = [
 WSGI_APPLICATION = "config.wsgi.application"
 
 
-DATABASES = {
-    "default": dj_database_url.config(
-        default=os.getenv("DATABASE_URL"),
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
-}
+# НАСТРОЙКА БАЗЫ ДАННЫХ - ИСПРАВЛЕННАЯ ВЕРСИЯ
+DATABASE_URL = os.getenv('DATABASE_URL')
 
-if "test" in sys.argv:
+if DATABASE_URL:
+    import dj_database_url
     DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": str(BASE_DIR / "test_db.sqlite3"),
-        }
+        'default': dj_database_url.parse(DATABASE_URL)
     }
-
-elif os.getenv("USE_SQLITE", "False") == "True":
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "test_db.sqlite3",
-        }
-    }
-
+    # Добавляем параметры отдельно
+    DATABASES['default']['CONN_MAX_AGE'] = 600
 else:
     DATABASES = {
-        "default": dj_database_url.config(
-            default=os.getenv("DATABASE_URL"),
-            conn_max_age=600,
-            conn_health_checks=True,
-        )
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
 
 
