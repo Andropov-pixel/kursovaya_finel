@@ -1,7 +1,5 @@
 import os
-import sys
 
-import dj_database_url
 from datetime import timedelta
 
 from dotenv import load_dotenv
