@@ -177,9 +177,6 @@ CACHES = {
         "LOCATION": "redis://localhost:6379/1",
     }
 }
-
-
-
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(minutes=60),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
