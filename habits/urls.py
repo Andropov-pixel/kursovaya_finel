@@ -1,25 +1,10 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import HabitViewSet
 
-from habits.apps import AtomicHabitsConfig
-from habits.views import HabitCreateView, HabitDeleteView, HabitListView, HabitUpdateView, PublicHabitListView
-
-# Описание маршрутизации для User
-
-app_name = AtomicHabitsConfig.name
+router = DefaultRouter()
+router.register(r"habits", HabitViewSet, basename="habit")
 
 urlpatterns = [
-    path("habits_list/", HabitListView.as_view(), name="habits_list"),
-    path(
-        "habits_public_list/",
-        PublicHabitListView.as_view(),
-        name="habits_public_list"),
-    path("habits_create/", HabitCreateView.as_view(), name="habits_create"),
-    path(
-        "habits_update/<int:pk>/",
-        HabitUpdateView.as_view(),
-        name="habits_update"),
-    path(
-        "habits_delete/<int:pk>/",
-        HabitDeleteView.as_view(),
-        name="habits_delete"),
+    path("", include(router.urls)),
 ]

@@ -1,22 +1,4 @@
 [flake8]
-# Базовые настройки
+ignore = E501, W503, F841, W292
 max-line-length = 88
-extend-ignore =
-    E203,
-    W503,
-    E501,
-    F401,
-exclude =
-    .git,
-    __pycache__,
-    migrations,
-    venv,
-    *.pyc,
-    *.swp,
-per-file-ignores =
-    # Игнорировать D100 (отсутствие docstring) в тестах
-    tests/*: D100,
-    # Игнорировать S101 (использование assert) в тестах
-    tests/*: S101,
-    # Игнорировать E402 (импорт не в начале файла) в скриптах
-    scripts/*: E402,
+exclude = .git,__pycache__,.venv

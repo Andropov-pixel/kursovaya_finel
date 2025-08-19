@@ -1,46 +1,46 @@
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    PermissionsMixin,
+    BaseUserManager,
+)
 from django.db import models
 
-# Create your models here.
+
+class UserManager(BaseUserManager):
+    """Менеджер пользователей — отвечает за создание user и superuser"""
+
+    def create_user(self, email, password=None, **extra_fields):
+        # Обязательное поле — email
+        if not email:
+            raise ValueError("У пользователя должен быть email")
+        email = self.normalize_email(email)  # Приводим email к нормальной форме
+        user = self.model(email=email, **extra_fields)  # Создаём пользователя
+        user.set_password(password)  # Хешируем пароль
+        user.save()  # Сохраняем пользователя в базу данных
+        return user
+
+    def create_superuser(self, email, password=None, **extra_fields):
+        # Устанавливаем флаги суперпользователя
+        extra_fields.setdefault("is_staff", True)
+        extra_fields.setdefault("is_superuser", True)
+
+        # Обязательно нужен пароль
+        if not password:
+            raise ValueError("У суперпользователя должен быть пароль")
+        return self.create_user(email, password, **extra_fields)
 
 
-class User(AbstractUser):
-    username = models.CharField(
-        max_length=100,
-        verbose_name="Username",
-        blank=True,
-        null=True,
-        help_text="Введите свое имя",
-    )
-    email = models.EmailField(unique=True, verbose_name="Электронная почта")
-    avatar = models.ImageField(
-        upload_to="users/avatars",
-        blank=True,
-        null=True,
-        verbose_name="Аватар",
-        help_text="Загрузити фотографию",
-    )
-    phone_number = models.CharField(
-        max_length=15,
-        verbose_name="Номер телефона",
-        help_text="Введите номер телефона",
-        blank=True,
-        null=True,
-    )
-    # telegram = models.CharField(
-    #     max_length=15,
-    #     verbose_name="Телеграм",
-    #     help_text="Введите телеграма",
-    #     blank=True,
-    #     null=True,
-    # )
+# Кастомная модель пользователя
+class User(AbstractBaseUser, PermissionsMixin):
+    email = models.EmailField(unique=True)  # Основной параметр — email
+    is_active = models.BooleanField(default=True)  # Можно ли входить в аккаунт
+    is_staff = models.BooleanField(default=False)  # Доступ в админку (для админов)
+    telegram_chat_id = models.CharField(max_length=100, blank=True, null=True)
+
+    USERNAME_FIELD = "email"  # Авторизация по email
+    REQUIRED_FIELDS = []
+
+    objects = UserManager()
 
     def __str__(self):
-        return f"{self.email}"
-
-    class Meta:
-        verbose_name = "пользователь"
-        verbose_name_plural = "Пользователи"
-
-    USERNAME_FIELD = "email"
-    REQUIRED_FIELDS = []
+        return self.email
